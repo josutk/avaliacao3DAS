@@ -10,30 +10,44 @@ public class DuracaoHoras {
 		this.viagem = viagem;
 	}
 	
-	
 	public int getDuracaoHoras() {
 		
-		if (viagem.getHoraTermino() == viagem.getHoraInicio())
-			this.duracaoHoras = 0;
+		if (checkInicioIgualFim(0))
+			setDuracaoHoras(0);
 		if (viagem.getHoraTermino() > viagem.getHoraInicio()) //varias possibilidades... 
-			if (viagem.getHoraTermino() == viagem.getHoraInicio() + 1) {  
+			if (checkInicioIgualFim(1)) {  
 				if (viagem.getMinutosTermino() < viagem.getHoraInicio())  //nao chegou a uma hora
-					this.duracaoHoras = 0;
-				else //durou pelo menos uma hora
-					this.duracaoHoras = 1;
+					setDuracaoHoras(0);
+		 		else //durou pelo menos uma hora
+					setDuracaoHoras(1);
 			} else { //possivelmente ultrapassou duas horas
-				if (viagem.getHoraTermino() -  viagem.getHoraInicio() > 2) //
-					this.duracaoHoras = viagem.getHoraTermino()-  viagem.getHoraInicio();
-				else if (viagem.getHoraTermino() -  viagem.getHoraInicio() == 2 &&   //certamente menos de duas horas  
-						 viagem.getMinutosTermino() < viagem.getMinutoInicio())    //e mais de uma hora
-					this.duracaoHoras = 1;
+				if (duracaoViagem() > 2) { //
+					int duracao = duracaoViagem();
+					setDuracaoHoras(duracao);
+				}else if (duracaoViagem() == 2 &&   //certamente menos de duas horas  
+						 viagem.getMinutosTermino() < viagem.getMinutoInicio()) {
+					//e mais de uma hora
+					setDuracaoHoras(1); ;	
+				}
 				else //duracao de duas horas, certamente
-					this.duracaoHoras = 2;
+					setDuracaoHoras(2);
 			}
 		
 		if (viagem.getHoraTermino() < viagem.getHoraInicio()) 
-			this.duracaoHoras = -1; //para casos em que a hora de termino nao foi registrada
+			setDuracaoHoras(-1) ; //para casos em que a hora de termino nao foi registrada
 		return this.duracaoHoras;
+	}
+
+	public void setDuracaoHoras(int duracaoHoras) {
+		this.duracaoHoras = duracaoHoras;
+	}
+
+	private int duracaoViagem() {
+		return viagem.getHoraTermino() -  viagem.getHoraInicio();
+	}
+
+	private boolean checkInicioIgualFim(int constante) {
+		return viagem.getHoraTermino() == viagem.getHoraInicio() + constante;
 	}
 
 }
